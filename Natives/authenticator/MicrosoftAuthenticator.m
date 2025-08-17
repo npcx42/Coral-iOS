@@ -217,9 +217,7 @@ typedef void(^XSTSCallback)(NSString *xsts, NSString *uhs);
 - (void)refreshTokenWithCallback:(Callback)callback {
     // Move tokens to keychain if we haven't
     if (!self.tokenData) {
-        showDialog(localize(@"Error", nil), @"Failed to load account tokens from keychain");
-        callback(nil, YES);
-        return;
+        [self saveChanges];
     }
 
     if ([NSDate.date timeIntervalSince1970] > [self.authData[@"expiresAt"] longValue]) {

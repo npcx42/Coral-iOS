@@ -1,5 +1,6 @@
 #import <Security/Security.h>
 #import "BaseAuthenticator.h"
+#import "ElyByAuthenticator.h"
 #import "../LauncherPreferences.h"
 #import "../ios_uikit_bridge.h"
 #import "../utils.h"
@@ -19,6 +20,11 @@ static BaseAuthenticator *current = nil;
     current = auth;
 }
 
++ (NSDictionary *)tokenDataOfProfile:(NSString *)profile {
+    // Возвращает данные токена для профиля (заглушка)
+    return [NSDictionary dictionary];
+}
+
 + (id)loadSavedName:(NSString *)name {
     NSMutableDictionary *authData = parseJSONFromFile([NSString stringWithFormat:@"%s/accounts/%@.json", getenv("POJAV_HOME"), name]);
     if (authData[@"NSErrorObject"] != nil) {
@@ -31,6 +37,9 @@ static BaseAuthenticator *current = nil;
 
     if ([authData[@"expiresAt"] longValue] == 0) {
         return [[LocalAuthenticator alloc] initWithData:authData];
+    } else if (authData[@"clientToken"] != nil) {
+        // Если есть clientToken, значит это аккаунт ely.by
+        return [[ElyByAuthenticator alloc] initWithData:authData];
     } else { 
         return [[MicrosoftAuthenticator alloc] initWithData:authData];
     }
@@ -58,6 +67,7 @@ static BaseAuthenticator *current = nil;
     NSError *error;
 
     [self.authData removeObjectForKey:@"input"];
+    [self.authData removeObjectForKey:@"password"];
 
     NSString *newPath = [NSString stringWithFormat:@"%s/accounts/%@.json", getenv("POJAV_HOME"), self.authData[@"username"]];
     if (self.authData[@"oldusername"] != nil && ![self.authData[@"username"] isEqualToString:self.authData[@"oldusername"]]) {

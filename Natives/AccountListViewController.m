@@ -1,6 +1,7 @@
 #import <AuthenticationServices/AuthenticationServices.h>
 
 #import "authenticator/BaseAuthenticator.h"
+#import "authenticator/ElyByAuthenticator.h"
 #import "AccountListViewController.h"
 #import "AFNetworking.h"
 #import "LauncherPreferences.h"
@@ -95,9 +96,7 @@
     [self addActivityIndicatorTo:cell];
 
     id callback = ^(id status, BOOL success) {
-        dispatch_async(dispatch_get_main_queue(), ^(){
-            [self callbackMicrosoftAuth:status success:success forCell:cell];
-        });
+        [self callbackMicrosoftAuth:status success:success forCell:cell];
     };
     [[BaseAuthenticator loadSavedName:self.accountList[indexPath.row][@"username"]] refreshTokenWithCallback:callback];
 }
@@ -146,6 +145,10 @@
         [self actionLoginMicrosoft:sender];
     }];
     [picker addAction:actionMicrosoft];
+    UIAlertAction *actionElyBy = [UIAlertAction actionWithTitle:localize(@"login.option.elyby", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self actionLoginElyBy:sender];
+    }];
+    [picker addAction:actionElyBy];
     UIAlertAction *actionLocal = [UIAlertAction actionWithTitle:localize(@"login.option.local", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self actionLoginLocal:sender];
     }];
@@ -194,6 +197,74 @@
     [self presentViewController:controller animated:YES completion:nil];
 }
 
+- (void)actionLoginElyBy:(UIView *)sender {
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:localize(@"Sign in", nil) message:localize(@"login.option.elyby", nil) preferredStyle:UIAlertControllerStyleAlert];
+    [controller addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = localize(@"login.alert.field.username", nil);
+        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        textField.borderStyle = UITextBorderStyleRoundedRect;
+    }];
+    [controller addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = localize(@"login.alert.field.password", nil);
+        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        textField.borderStyle = UITextBorderStyleRoundedRect;
+        textField.secureTextEntry = YES;
+    }];
+    [controller addAction:[UIAlertAction actionWithTitle:localize(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSArray *textFields = controller.textFields;
+        UITextField *usernameField = textFields[0];
+        UITextField *passwordField = textFields[1];
+        
+        if (usernameField.text.length == 0 || passwordField.text.length == 0) {
+            controller.message = localize(@"login.error.fields.empty", nil);
+            [self presentViewController:controller animated:YES completion:nil];
+            return;
+        }
+        
+        self.modalInPresentation = YES;
+        self.tableView.userInteractionEnabled = NO;
+        
+        // Проверяем, является ли sender ячейкой таблицы
+        UITableViewCell *cell = nil;
+        if ([sender isKindOfClass:[UITableViewCell class]]) {
+            cell = (UITableViewCell *)sender;
+            [self addActivityIndicatorTo:cell];
+        }
+        
+        ElyByAuthenticator *auth = [[ElyByAuthenticator alloc] initWithInput:usernameField.text];
+        auth.authData[@"password"] = passwordField.text;
+        
+        id callback = ^(id status, BOOL success) {
+            if (cell) {
+                [self callbackMicrosoftAuth:status success:success forCell:cell];
+            } else {
+                // Обработка для случая, когда sender не ячейка таблицы
+                if (!success && status != nil) {
+                    self.modalInPresentation = NO;
+                    self.tableView.userInteractionEnabled = YES;
+                    
+                    if ([status isKindOfClass:[NSError class]]) {
+                        NSLog(@"[ElyBy] Error: %@", [status localizedDescription]);
+                        showDialog(localize(@"Error", nil), [status localizedDescription]);
+                    } else {
+                        showDialog(localize(@"Error", nil), status);
+                    }
+                } else if (success) {
+                    if ([status isKindOfClass:[NSString class]] && [status isEqualToString:@"DEMO"]) {
+                        showDialog(localize(@"login.warn.title.demomode", nil), localize(@"login.warn.message.demomode", nil));
+                    }
+                    self.whenItemSelected();
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }
+            }
+        };
+        
+        [auth loginWithCallback:callback];
+    }]];
+    [controller addAction:[UIAlertAction actionWithTitle:localize(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
 - (void)actionLoginMicrosoft:(UITableViewCell *)sender {
     NSURL *url = [NSURL URLWithString:@"https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_url=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf"];
 
@@ -212,18 +283,18 @@
 
         NSDictionary *queryItems = [self parseQueryItems:callbackURL.absoluteString];
         if (queryItems[@"code"]) {
-            dispatch_async(dispatch_get_main_queue(), ^(){
-                self.modalInPresentation = YES;
-                self.tableView.userInteractionEnabled = NO;
-                [self addActivityIndicatorTo:sender];
-            });
+            self.modalInPresentation = YES;
+            self.tableView.userInteractionEnabled = NO;
+            [self addActivityIndicatorTo:sender];
             id callback = ^(id status, BOOL success) {
-                if ([status isKindOfClass:NSString.class] && [status isEqualToString:@"DEMO"] && success) {
-                    showDialog(localize(@"login.warn.title.demomode", nil), localize(@"login.warn.message.demomode", nil));
+                if ([status isKindOfClass:[NSError class]]) {
+                    sender.detailTextLabel.text = [status localizedDescription];
+                } else {
+                    if ([status isKindOfClass:[NSString class]] && [status isEqualToString:@"DEMO"]) {
+                        showDialog(localize(@"login.warn.title.demomode", nil), localize(@"login.warn.message.demomode", nil));
+                    }
+                    sender.detailTextLabel.text = status;
                 }
-                dispatch_async(dispatch_get_main_queue(), ^(){
-                    [self callbackMicrosoftAuth:status success:success forCell:sender];
-                });
             };
             [[[MicrosoftAuthenticator alloc] initWithInput:queryItems[@"code"]] loginWithCallback:callback];
         } else {
@@ -260,18 +331,42 @@
 - (void)callbackMicrosoftAuth:(id)status success:(BOOL)success forCell:(UITableViewCell *)cell {
     if (status != nil) {
         if (success) {
-            cell.detailTextLabel.text = status;
+            // Успешный вход с некоторым сообщением
+            if ([status isKindOfClass:[NSError class]]) {
+                cell.detailTextLabel.text = [status localizedDescription];
+            } else {
+                if ([status isKindOfClass:[NSString class]] && [status isEqualToString:@"DEMO"]) {
+                    showDialog(localize(@"login.warn.title.demomode", nil), localize(@"login.warn.message.demomode", nil));
+                }
+                cell.detailTextLabel.text = [status isKindOfClass:[NSString class]] ? status : @"";
+            }
         } else {
+            // Ошибка аутентификации
             self.modalInPresentation = NO;
             self.tableView.userInteractionEnabled = YES;
             [self removeActivityIndicatorFrom:cell];
-            cell.detailTextLabel.text = [status localizedDescription];
-            NSData *errorData = ((NSError *)status).userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-            NSString *errorStr = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
-            NSLog(@"[MSA] Error: %@", errorStr);
-            showDialog(localize(@"Error", nil), errorStr);
+            
+            if ([status isKindOfClass:[NSError class]]) {
+                cell.detailTextLabel.text = [status localizedDescription];
+                NSData *errorData = ((NSError *)status).userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+                if (errorData) {
+                    NSString *errorStr = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+                    NSLog(@"[MSA] Error: %@", errorStr);
+                    showDialog(localize(@"Error", nil), errorStr);
+                } else {
+                    showDialog(localize(@"Error", nil), [status localizedDescription]);
+                }
+            } else if ([status isKindOfClass:[NSString class]]) {
+                cell.detailTextLabel.text = status;
+                showDialog(localize(@"Error", nil), status);
+            } else {
+                // Handle case where status is neither NSError nor NSString
+                cell.detailTextLabel.text = @"";
+                showDialog(localize(@"Error", nil), localize(@"login.error.invalid_response", nil));
+            }
         }
     } else if (success) {
+        // Успешный вход без сообщений
         self.whenItemSelected();
         [self removeActivityIndicatorFrom:cell];
         [self dismissViewControllerAnimated:YES completion:nil];
