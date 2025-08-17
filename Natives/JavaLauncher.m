@@ -15,6 +15,8 @@
 #import "JavaLauncher.h"
 #import "LauncherPreferences.h"
 #import "PLProfiles.h"
+#import "authenticator/BaseAuthenticator.h"
+#import "authenticator/ElyByAuthenticator.h"
 
 #define fm NSFileManager.defaultManager
 
@@ -188,6 +190,23 @@ int launchJVM(NSString *username, id launchTarget, int width, int height, int mi
 
     int margc = -1;
     const char *margv[1000];
+
+    // Добавляем аргументы authlib-injector если используется аккаунт ely.by
+    if ([username length] > 0 && [BaseAuthenticator.current isKindOfClass:ElyByAuthenticator.class]) {
+        NSDictionary *authData = BaseAuthenticator.current.authData;
+        if (authData[@"authserver"] != nil) {
+            NSLog(@"[JavaLauncher] Adding authlib-injector arguments for ely.by");
+            NSArray *authlibArgs = [(ElyByAuthenticator *)BaseAuthenticator.current getJvmArgsForAuthlib];
+            if (authlibArgs.count > 0) {
+                for (NSString *arg in authlibArgs) {
+                    margv[++margc] = arg.UTF8String;
+                    NSLog(@"[JavaLauncher] Added authlib-injector arg: %s", arg.UTF8String);
+                }
+            } else {
+                NSLog(@"[JavaLauncher] Warning: No authlib-injector arguments available");
+            }
+        }
+    }
 
     margv[++margc] = [NSString stringWithFormat:@"%@/bin/java", javaHome].UTF8String;
     margv[++margc] = "-XstartOnFirstThread";
