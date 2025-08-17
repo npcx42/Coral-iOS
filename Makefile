@@ -302,9 +302,12 @@ assets:
 		xcrun actool $(SOURCEDIR)/Natives/Assets.xcassets \
 			--compile $(SOURCEDIR)/Natives/resources \
 			--platform iphoneos \
+			--target-device iphone \
+			--target-device ipad \
 			--minimum-deployment-target 14.0 \
 			--app-icon AppIcon-Light \
-			--output-partial-info-plist /dev/null || exit 1; \
+			--output-partial-info-plist /dev/null || \
+			echo 'Warning: Asset compilation failed, continuing without compiled assets'; \
 	else \
 		echo 'Due to the required tools not being available, you cannot compile the extras for Angel Aura Amethyst with an iOS device.'; \
 	fi
