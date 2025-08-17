@@ -19,7 +19,7 @@ jobs:
           - platform: 2
             platform_name: ios
     
-    runs-on: J316sAP
+    runs-on: macos-latest
     steps:
       - name: Remove work folders
         run: |
@@ -40,7 +40,12 @@ jobs:
         id: gl4es-sha
         run: echo "::set-output name=sha::$(echo $(git ls-remote https://github.com/PojavLauncherTeam/gl4es-114-extra refs/heads/master | grep -io '^\S*'))"
         shell: bash
-
+        
+      - name: Install dependencies
+        run: |
+          brew install cmake make ldid
+          brew install --cask zulu@8
+          
       - name: Cache gl4es
         uses: actions/cache@main
         if: false # use gl4es 1.1.5
