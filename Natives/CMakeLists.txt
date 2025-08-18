@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(AngelAuraAmethyst)
+project(Coral)
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/config.h.in ${CMAKE_CURRENT_LIST_DIR}/config.h)
 
@@ -91,13 +91,13 @@ target_link_libraries(AFNetworking
 )
 
 # MinecraftAccount JNI
-add_library(AmethystAccountJNI SHARED
-  authenticator/MinecraftAccountJNI.m
+add_library(CoralAccountJNI SHARED
+  AccountJNI.c
 )
-target_link_libraries(AmethystAccountJNI)
+target_link_libraries(CoralAccountJNI)
 
-# Angel Aura Amethyst
-add_executable(AngelAuraAmethyst
+# Coral
+add_executable(Coral
   dyld_bypass_validation.m
   dyld_patch_platform.m
   main.m
@@ -181,10 +181,10 @@ add_executable(AngelAuraAmethyst
 )
 
 if("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Linux|^GNU$|Android")
-target_sources(AngelAuraAmethyst PUBLIC non_darwin_utils.m)
+target_sources(Coral PUBLIC non_darwin_utils.m)
 endif()
 
-target_link_libraries(AngelAuraAmethyst
+target_link_libraries(Coral
   PUBLIC AFNetworking
   lzma
   "-F'${CMAKE_CURRENT_LIST_DIR}/build'"
@@ -206,7 +206,7 @@ target_link_libraries(AngelAuraAmethyst
   "-framework WebKit"
   "-weak_framework SafariServices"
 )
-set_target_properties(AngelAuraAmethyst PROPERTIES
+set_target_properties(Coral PROPERTIES
   MACOSX_BUNDLE TRUE
   MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_LIST_DIR}/Info.plist")

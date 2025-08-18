@@ -1,23 +1,22 @@
-# Angel Aura Amethyst (iOS)
-[![Development build](https://github.com/AngelAuraMC/Amethyst-iOS/actions/workflows/development.yml/badge.svg?branch=main)](https://github.com/AngelAuraMC/Amethyst-iOS/actions/workflows/development.yml)
-[![Crowdin](https://badges.crowdin.net/angelauramc/localized.svg)](https://crowdin.com/project/angelauramc)
-[![Discord](https://img.shields.io/discord/724163890803638273.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/5ptqkyZxEy)
-
-
+# Coral (iOS)
 
 ## Introduction
-Amethyst is a Minecraft: Java Edition launcher for Android, iOS, and iPadOS, based off of zhuowei's [Boardwalk](https://github.com/zhuowei/Boardwalk) project.
+Coral is a Minecraft: Java Edition launcher for iOS, based off of zhuowei's [Boardwalk](https://github.com/zhuowei/Boardwalk) and Angel Aura's [Amethyst](https://github.com/AngelAuraMC/Amethyst-iOS) project.
 * Supports most versions of Minecraft: Java Edition, from the very first beta to the newest snapshots.
 * Supports Forge, Fabric, OptiFine, and Quilt for you to customize the experience with supported mods.
 * Includes customizable on-screen controls, keyboard and mouse support, and game controller support.
 * Optimized for jailbroken and TrollStore devices to enable better capabilities.
-* Microsoft account and demo mode support for logging into Minecraft.
+* Ely.by account and skin system, Microsoft account support, Demo mode without restrictions.
 * ...and much more!
 
-This repository contains the code for our iOS and iPadOS port of Amethyst. Looking for [Android?](https://github.com/AngelAuraMC/Amethyst-Android)
+Important: Please support the developers of Minecraft by purchasing the game if possible.
 
-## Getting started with Amethyst
-The [Amethyst wiki](https://wiki.angelauramc.dev/wiki/getting_started/INSTALL.html#ios) has extensive documentation on how to install, set up, and play! For those who wish to install quickly, here's the basics:
+Looking for Android? There is no Android fork available yet, but it will be available soon.
+
+Also check out [Amethyst](https://github.com/AngelAuraMC/Amethyst-iOS) and [Amethyst-Android](https://github.com/AngelAuraMC/Amethyst-Android) for more stable and experience!
+
+## Getting started with Coral
+Download Coral from releases and install it using any method of sideloading. 
 
 ### Requirements
 At the minimum, you'll need one of the following devices on **iOS 14.0** and later:
@@ -39,17 +38,17 @@ Recommended devices provide a smoother and more enjoyable gameplay experience co
 - iOS 17.x and iOS 18.x is supported. However, a computer is required. For more information, please check out [the official wiki](https://wiki.angelauramc.dev/wiki/faq/ios/JIT.html#what-are-the-methods-to-enable-jit)
 
 ### Setting up to sideload
-Amethyst can be sideloaded in many ways. Our recommended solution is to install [TrollStore](https://github.com/opa334/TrollStore) if your iOS version supports it. Installing with TrollStore allows you to permanently sign the application, automatically enable JIT, and increase memory limits.
+Coral can be sideloaded in many ways. Our recommended solution is to install [TrollStore](https://github.com/opa334/TrollStore) if your iOS version supports it. Installing with TrollStore allows you to permanently sign the application, automatically enable JIT, and increase memory limits.
 
 If you cannot, [AltStore](https://altstore.io) and [SideStore](https://sidestore.io) are your next best options.
-- Signing services that do not use your UDID (and use distribution certificates) are not supported, as Amethyst requires capabilities they do not allow. However, if you do managed to gain access to a Development certificate, due to it having the necessary entitlement (being com.apple.security.get-task-allow) to attach a debugger to the running process (enabling JIT), you may use a Development certificate.
+- Signing services that do not use your UDID (and use distribution certificates) are not supported, as Coral requires capabilities they do not allow. However, if you do managed to gain access to a Development certificate, due to it having the necessary entitlement (being com.apple.security.get-task-allow) to attach a debugger to the running process (enabling JIT), you may use a Development certificate.
   
-- Only install sideloading software and Amethyst from trusted sources. We are not responsible for any harm caused by using unofficial software.
+- Only install sideloading software and Coral from trusted sources. We are not responsible for any harm caused by using unofficial software.
 - Jailbreaks also benefit from permenant signing, autoJIT, and increased memory limits. However, we do not recommend them on devices intended for regular use.
 
-### Installing Amethyst
+### Installing Coral
 #### Release build (TrollStore)
-1. Download an IPA of Amethyst in [Releases](https://github.com/AngelAuraMC/Amethyst-iOS/releases).
+1. Download an IPA of Coral in [Releases](https://github.com/npcx42/Coral-iOS/releases).
 2. Open the package in TrollStore using the share menu.
 
 #### Release build (AltStore/SideStore trusted source)
@@ -57,7 +56,7 @@ These builds will be available soon, stay tuned.
 
 #### Nightly builds
 *These builds can contain game-breaking bugs. Use with caution.*
-1. Download an IPA build of Amethyst in the [Actions tab](https://github.com/AngelAuraMC/Amethyst-iOS/actions).
+1. Download an IPA build of Coral in the [Actions tab](https://github.com/npcx42/Coral-iOS/actions).
 2. Open the downloaded IPA in your sideloading app to install.
 
 #### Nightly builds (AltStore/SideStore trusted sources)
@@ -75,8 +74,6 @@ Amethyst makes use of **just-in-time compilation**, or JIT, to provide usable sp
 (#) Only the first time.
 
 ## Contributors
-Amethyst is amazing, and surprisingly stable, and it wouldn't be this way without the commmunity that helped and contribute to the project! Some notable names:
-
 @crystall1nedev - Project manager, iOS port developer  
 @khanhduytran0 - iOS port developer  
 @artdeell  

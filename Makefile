@@ -99,7 +99,7 @@ else
 $(error PLATFORM is not valid.)
 endif
 
-POJAV_BUNDLE_DIR      ?= $(OUTPUTDIR)/AngelAuraAmethyst.app
+POJAV_BUNDLE_DIR      ?= $(OUTPUTDIR)/Coral.app
 POJAV_JRE8_DIR        ?= $(SOURCEDIR)/depends/java-8-openjdk
 POJAV_JRE17_DIR       ?= $(SOURCEDIR)/depends/java-17-openjdk
 POJAV_JRE21_DIR       ?= $(SOURCEDIR)/depends/java-21-openjdk
@@ -143,10 +143,10 @@ METHOD_PACKAGE = \
 		IPA_SUFFIX=".ipa"; \
 	fi; \
 	if [ '$(SLIMMED_ONLY)' = '0' ]; then \
-		zip --symlinks -r $(OUTPUTDIR)/org.angelauramc.amethyst-$(VERSION)-$(PLATFORM_NAME)$$IPA_SUFFIX Payload; \
+		zip --symlinks -r $(OUTPUTDIR)/com.iconic.coral-$(VERSION)-$(PLATFORM_NAME)$$IPA_SUFFIX Payload; \
 	fi; \
 	if [ '$(SLIMMED)' = '1' ] || [ '$(SLIMMED_ONLY)' = '1' ]; then \
-		zip --symlinks -r $(OUTPUTDIR)/org.angelauramc.amethyst.slimmed-$(VERSION)-$(PLATFORM_NAME)$$IPA_SUFFIX Payload --exclude='Payload/AngelAuraAmethyst.app/java_runtimes/*'; \
+		zip --symlinks -r $(OUTPUTDIR)/com.iconic.coral.slimmed-$(VERSION)-$(PLATFORM_NAME)$$IPA_SUFFIX Payload --exclude='Payload/Coral.app/java_runtimes/*'; \
 	fi
 
 # Function to download and unpack Java runtimes.
@@ -226,7 +226,7 @@ endif
 all: clean native java jre assets payload package dsym
 
 help:
-	echo 'Makefile to compile Angel Aura Amethyst'
+	echo 'Makefile to compile Coral'
 	echo ''
 	echo 'Usage:'
 	echo '    make                                Makes everything under all'
@@ -236,8 +236,8 @@ help:
 	echo '    make java                           Builds the Java app'
 	echo '    make jre                            Downloads/unpacks the iOS JREs'
 	echo '    make assets                         Compiles Assets.xcassets'
-	echo '    make payload                        Makes Payload/AngelAuraAmethyst.app'
-	echo '    make package                        Builds ipa of Angel Aura Amethyst'
+	echo '    make payload                        Makes Payload/Coral.app'
+	echo '    make package                        Builds ipa of Coral'
 	echo '    make deploy                         Copies files to local iDevice'
 	echo '    make dsym                           Generate debug symbol files'
 	echo '    make clean                          Cleans build directories'
@@ -251,7 +251,7 @@ check:
 	)
 
 native:
-	echo '[Amethyst v$(VERSION)] native - start'
+	echo '[Coral v$(VERSION)] native - start'
 	mkdir -p $(WORKINGDIR)
 	cd $(WORKINGDIR) && cmake . \
 		-DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) \
@@ -267,17 +267,17 @@ native:
 		..
 
 	cmake --build $(WORKINGDIR) --config $(CMAKE_BUILD_TYPE) -j$(JOBS)
-	#	--target awt_headless awt_xawt libOSMesaOverride.dylib tinygl4angle AngelAuraAmethyst
+	#	--target awt_headless awt_xawt libOSMesaOverride.dylib tinygl4angle Coral
 	rm $(WORKINGDIR)/libawt_headless.dylib
-	echo '[Amethyst v$(VERSION)] native - end'
+	echo '[Coral v$(VERSION)] native - end'
 
 java:
-	echo '[Amethyst v$(VERSION)] java - start'
+	echo '[Coral v$(VERSION)] java - start'
 	$(MAKE) -C JavaApp -j$(JOBS) BOOTJDK=$(BOOTJDK)
-	echo '[Amethyst v$(VERSION)] java - end'
+	echo '[Coral v$(VERSION)] java - end'
 
 jre: native
-	echo '[Amethyst v$(VERSION)] jre - start'
+	echo '[Coral v$(VERSION)] jre - start'
 	mkdir -p $(SOURCEDIR)/depends
 	cd $(SOURCEDIR)/depends; \
 	$(call METHOD_JAVA_UNPACK,8,'https://crystall1ne.dev/cdn/amethyst-ios/jre8-ios-aarch64.zip'); \
@@ -293,12 +293,12 @@ jre: native
 	cp $(WORKINGDIR)/libawt_xawt.dylib $(OUTPUTDIR)/java_runtimes/java-8-openjdk/lib; \
 	cp $(WORKINGDIR)/libawt_xawt.dylib $(OUTPUTDIR)/java_runtimes/java-17-openjdk/lib;
 	cp $(WORKINGDIR)/libawt_xawt.dylib $(OUTPUTDIR)/java_runtimes/java-21-openjdk/lib
-	echo '[Amethyst v$(VERSION)] jre - end'
+	echo '[Coral v$(VERSION)] jre - end'
 
 assets:
-	echo '[Amethyst v$(VERSION)] assets - start'
+	echo '[Coral v$(VERSION)] assets - start'
 	if [ '$(IOS)' = '0' ] && [ '$(DETECTPLAT)' = 'Darwin' ]; then \
-		mkdir -p $(WORKINGDIR)/AngelAuraAmethyst.app/Base.lproj; \
+		mkdir -p $(WORKINGDIR)/Coral.app/Base.lproj; \
 		xcrun actool $(SOURCEDIR)/Natives/Assets.xcassets \
 			--compile $(SOURCEDIR)/Natives/resources \
 			--platform iphoneos \
@@ -309,53 +309,59 @@ assets:
 			--output-partial-info-plist /dev/null || \
 			echo 'Warning: Asset compilation failed, continuing without compiled assets'; \
 	else \
-		echo 'Due to the required tools not being available, you cannot compile the extras for Angel Aura Amethyst with an iOS device.'; \
+		echo 'Due to the required tools not being available, you cannot compile the extras for Coral with an iOS device.'; \
 	fi
-	echo '[Amethyst v$(VERSION)] assets - end'
+	echo '[Coral v$(VERSION)] assets - end'
 
 payload: native java jre assets
-	echo '[Amethyst v$(VERSION)] payload - start'
-	$(call METHOD_DIRCHECK,$(WORKINGDIR)/AngelAuraAmethyst.app/libs)
-	$(call METHOD_DIRCHECK,$(WORKINGDIR)/AngelAuraAmethyst.app/libs_caciocavallo)
-	$(call METHOD_DIRCHECK,$(WORKINGDIR)/AngelAuraAmethyst.app/libs_caciocavallo17)
-	cp -R $(SOURCEDIR)/Natives/resources/en.lproj/LaunchScreen.storyboardc $(WORKINGDIR)/AngelAuraAmethyst.app/Base.lproj/ || exit 1
-	cp -R $(SOURCEDIR)/Natives/resources/* $(WORKINGDIR)/AngelAuraAmethyst.app/ || exit 1
-	cp $(WORKINGDIR)/*.dylib $(WORKINGDIR)/AngelAuraAmethyst.app/Frameworks/ || exit 1
-	cp -R $(SOURCEDIR)/JavaApp/libs/others/* $(WORKINGDIR)/AngelAuraAmethyst.app/libs/ || exit 1
-	cp $(SOURCEDIR)/JavaApp/build/*.jar $(WORKINGDIR)/AngelAuraAmethyst.app/libs/ || exit 1
-	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo/* $(WORKINGDIR)/AngelAuraAmethyst.app/libs_caciocavallo || exit 1
-	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo17/* $(WORKINGDIR)/AngelAuraAmethyst.app/libs_caciocavallo17 || exit 1
+	echo '[Coral v$(VERSION)] payload - start'
+	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs)
+	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs_caciocavallo)
+	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs_caciocavallo17)
+	cp -R $(SOURCEDIR)/Natives/resources/en.lproj/LaunchScreen.storyboardc $(WORKINGDIR)/Coral.app/Base.lproj/ || exit 1
+	cp -R $(SOURCEDIR)/Natives/Info.plist $(WORKINGDIR)/Coral.app/Info.plist || exit 1
+	cp -R $(SOURCEDIR)/Natives/en.lproj $(WORKINGDIR)/Coral.app/ || exit 1
+	cp -R $(SOURCEDIR)/Natives/Base.lproj $(WORKINGDIR)/Coral.app/ || exit 1
+	cp -R $(SOURCEDIR)/Natives/resources $(WORKINGDIR)/Coral.app/ || exit 1
+	cp -R $(SOURCEDIR)/Natives/default_controls.json $(WORKINGDIR)/Coral.app/ || exit 1
+	cp -R $(SOURCEDIR)/libs/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
+	cp -R $(WORKINGDIR)/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
+	cp -R $(WORKINGDIR)/Coral $(WORKINGDIR)/Coral.app/Coral || exit 1
+	cp -R $(SOURCEDIR)/JavaApp/libs/others/* $(WORKINGDIR)/Coral.app/libs/ || exit 1
+	cp -R $(SOURCEDIR)/JavaApp/build/libs/*.jar $(WORKINGDIR)/Coral.app/libs/ || exit 1
+	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo/* $(WORKINGDIR)/Coral.app/libs_caciocavallo || exit 1
+	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo17/* $(WORKINGDIR)/Coral.app/libs_caciocavallo17 || exit 1
 	$(call METHOD_DIRCHECK,$(OUTPUTDIR)/Payload)
-	cp -R $(WORKINGDIR)/AngelAuraAmethyst.app $(OUTPUTDIR)/Payload
+	cp -R $(WORKINGDIR)/Coral.app $(OUTPUTDIR)/Payload
 	if [ '$(SLIMMED_ONLY)' != '1' ]; then \
-		cp -R $(OUTPUTDIR)/java_runtimes $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app; \
+		cp -R $(OUTPUTDIR)/java_runtimes $(OUTPUTDIR)/Payload/Coral.app; \
 	fi
-	ldid -S $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app; \
+	ldid -S $(OUTPUTDIR)/Payload/Coral.app; \
 	if [ '$(TROLLSTORE_JIT_ENT)' == '1' ]; then \
-		ldid -S$(SOURCEDIR)/entitlements.trollstore.xml $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/AngelAuraAmethyst; \
+		ldid -S$(SOURCEDIR)/entitlements.trollstore.xml $(OUTPUTDIR)/Payload/Coral.app/Coral; \
 	elif [ '$(PLATFORM)' == '6' ]; then \
-		ldid -S$(SOURCEDIR)/entitlements.codesign.xml $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/AngelAuraAmethyst; \
+		ldid -S$(SOURCEDIR)/entitlements.codesign.xml $(OUTPUTDIR)/Payload/Coral.app/Coral; \
 	else \
-		ldid -S$(SOURCEDIR)/entitlements.sideload.xml $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/AngelAuraAmethyst; \
+		ldid -S$(SOURCEDIR)/entitlements.sideload.xml $(OUTPUTDIR)/Payload/Coral.app/Coral; \
 	fi
 	chmod -R 755 $(OUTPUTDIR)/Payload
 	if [ '$(PLATFORM)' != '2' ]; then \
-		$(call METHOD_MACHO,$(OUTPUTDIR)/Payload/AngelAuraAmethyst.app,$(call METHOD_CHANGE_PLAT,$(PLATFORM),$$file)); \
+		$(call METHOD_MACHO,$(OUTPUTDIR)/Payload/Coral.app,$(call METHOD_CHANGE_PLAT,$(PLATFORM),$$file)); \
 		$(call METHOD_MACHO,$(OUTPUTDIR)/java_runtimes,$(call METHOD_CHANGE_PLAT,$(PLATFORM),$$file)); \
 	fi
-	echo '[Amethyst v$(VERSION)] payload - end'
+	echo '[Coral v$(VERSION)] payload - end'
 
 deploy:
-	echo '[Amethyst v$(VERSION)] deploy - start'
+	echo '[Coral v$(VERSION)] deploy - start'
 	cd $(OUTPUTDIR); \
 	if [ '$(IOS)' = '1' ]; then \
-		ldid -S $(WORKINGDIR)/AngelAuraAmethyst.app || exit 1; \
-		ldid -S$(SOURCEDIR)/entitlements.trollstore.xml $(WORKINGDIR)/AngelAuraAmethyst.app/AngelAuraAmethyst || exit 1; \
-		sudo mv $(WORKINGDIR)/*.dylib $(PREFIX)Applications/AngelAuraAmethyst.app/Frameworks/ || exit 1; \
-		sudo mv $(WORKINGDIR)/AngelAuraAmethyst.app/AngelAuraAmethyst $(PREFIX)Applications/AngelAuraAmethyst.app/AngelAuraAmethyst || exit 1; \
-		sudo mv $(SOURCEDIR)/JavaApp/build/*.jar $(PREFIX)Applications/AngelAuraAmethyst.app/libs/ || exit 1; \
-		cd $(PREFIX)Applications/AngelAuraAmethyst.app/Frameworks || exit 1; \
-		sudo chown -R 501:501 $(PREFIX)Applications/AngelAuraAmethyst.app/* || exit 1; \
+		ldid -S $(WORKINGDIR)/Coral.app || exit 1; \
+		ldid -S$(SOURCEDIR)/entitlements.trollstore.xml $(WORKINGDIR)/Coral.app/Coral || exit 1; \
+		sudo mv $(WORKINGDIR)/*.dylib $(PREFIX)Applications/Coral.app/Frameworks/ || exit 1; \
+		sudo mv $(WORKINGDIR)/Coral.app/Coral $(PREFIX)Applications/Coral.app/Coral || exit 1; \
+		sudo mv $(SOURCEDIR)/JavaApp/build/*.jar $(PREFIX)Applications/Coral.app/libs/ || exit 1; \
+		cd $(PREFIX)Applications/Coral.app/Frameworks || exit 1; \
+		sudo chown -R 501:501 $(PREFIX)Applications/Coral.app/* || exit 1; \
 	elif [ '$(IOS)' = '0' ] && [ '$(DETECTPLAT)' = 'Darwin' ]; then \
 		if [ '$(PLATFORM)' != '2' ] || [ '$(TEAMID)' = '-1' ] || [ '$(SIGNING_TEAMID)' = '-1' ] || [ '$(PROVISIONING)' = '-1' ]; then \
 			echo 'Configuration not supported for deploy recipe.'; \
@@ -370,12 +376,12 @@ deploy:
 	else \
 		echo 'Device not supported for deploy recipe.'; \
 	fi
-	echo '[Amethyst v$(VERSION)] deploy - end'
+	echo '[Coral v$(VERSION)] deploy - end'
 
 package: payload
-	echo '[Amethyst v$(VERSION)] package - start'
+	echo '[Coral v$(VERSION)] package - start'
 	if [ '$(TEAMID)' != '-1' ] && [ '$(SIGNING_TEAMID)' != '-1' ] && [ -f '$(PROVISIONING)' ] && [ '$(DETECTPLAT)' = 'Darwin' ]; then \
-		printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n	<key>application-identifier</key>\n	<string>$(TEAMID).org.angelauramc.amethyst</string>\n	<key>com.apple.developer.team-identifier</key>\n	<string>$(TEAMID)</string>\n	<key>get-task-allow</key>\n	<true/>\n	<key>keychain-access-groups</key>\n	<array>\n	<string>$(TEAMID).*</string>\n	<string>com.apple.token</string>\n	</array>\n</dict>\n</plist>' > entitlements.codesign.xml; \
+		printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n	<key>application-identifier</key>\n	<string>$(TEAMID).com.iconic.coral</string>\n	<key>com.apple.developer.team-identifier</key>\n	<string>$(TEAMID)</string>\n	<key>get-task-allow</key>\n	<true/>\n	<key>keychain-access-groups</key>\n	<array>\n	<string>$(TEAMID).*</string>\n	<string>com.apple.token</string>\n	</array>\n</dict>\n</plist>' > entitlements.codesign.xml; \
 		$(MAKE) codesign; \
 		rm -rf entitlements.codesign.xml; \
 	else \
@@ -384,27 +390,27 @@ package: payload
 	cd $(OUTPUTDIR); \
 	$(call METHOD_PACKAGE); \
 	zip --symlinks -r $(OUTPUTDIR)/java_runtimes.zip java_runtimes; \
-	echo '[Amethyst v$(VERSION)] package - end'
+	echo '[Coral v$(VERSION)] package - end'
 	
 dsym: payload
-	echo '[Amethyst v$(VERSION)] dsym - start'
-	dsymutil --arch arm64 $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/AngelAuraAmethyst; \
-	rm -rf $(OUTPUTDIR)/AngelAuraAmethyst.dSYM; \
-	mv $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/AngelAuraAmethyst.dSYM $(OUTPUTDIR)/AngelAuraAmethyst.dSYM
-	echo '[Amethyst v$(VERSION)] dsym - end'
+	echo '[Coral v$(VERSION)] dsym - start'
+	dsymutil --arch arm64 $(OUTPUTDIR)/Payload/Coral.app/Coral; \
+	rm -rf $(OUTPUTDIR)/Coral.dSYM; \
+	mv $(OUTPUTDIR)/Payload/Coral.app/Coral.dSYM $(OUTPUTDIR)/Coral.dSYM
+	echo '[Coral v$(VERSION)] dsym - end'
 	
 codesign:
-	echo '[Amethyst v$(VERSION)] codesign - start'
-	cp '$(PROVISIONING)' $(OUTPUTDIR)/Payload/AngelAuraAmethyst.app/embedded.mobileprovision
-	$(call METHOD_MACHO,$(OUTPUTDIR)/Payload/AngelAuraAmethyst.app,$(call METHOD_CODESIGN,$(SIGNING_TEAMID),$$file))
+	echo '[Coral v$(VERSION)] codesign - start'
+	cp '$(PROVISIONING)' $(OUTPUTDIR)/Payload/Coral.app/embedded.mobileprovision
+	$(call METHOD_MACHO,$(OUTPUTDIR)/Payload/Coral.app,$(call METHOD_CODESIGN,$(SIGNING_TEAMID),$$file))
 	$(call METHOD_MACHO,$(OUTPUTDIR)/java_runtimes,$(call METHOD_CODESIGN,$(SIGNING_TEAMID),$$file))
-	echo '[Amethyst v$(VERSION)] codesign - end'
+	echo '[Coral v$(VERSION)] codesign - end'
 clean:
-	echo '[Amethyst v$(VERSION)] clean - start'
+	echo '[Coral v$(VERSION)] clean - start'
 	rm -rf $(WORKINGDIR)
 	rm -rf JavaApp/build
 	rm -rf $(OUTPUTDIR)
-	echo '[Amethyst v$(VERSION)] clean - end'
+	echo '[Coral v$(VERSION)] clean - end'
 
 		
 

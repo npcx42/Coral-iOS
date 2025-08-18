@@ -2,9 +2,9 @@
 <plist version="1.0">
 <dict>
 	<key>application-identifier</key>
-	<string>org.angelauramc.amethyst</string>
+	<string>com.iconic.coral</string>
 <key>com.apple.private.security.container-required</key>
-	<string>org.angelauramc.amethyst</string>
+	<string>com.iconic.coral</string>
     <key>get-task-allow</key>
     <true/>
 

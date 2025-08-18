@@ -61,7 +61,7 @@ public class UIKit {
     }
 
     static {
-        System.load(System.getenv("BUNDLE_PATH") + "/AngelAuraAmethyst");
+        System.load(System.getenv("BUNDLE_PATH") + "/Coral");
     }
 
 
