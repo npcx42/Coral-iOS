@@ -92,7 +92,7 @@ target_link_libraries(AFNetworking
 
 # MinecraftAccount JNI
 add_library(CoralAccountJNI SHARED
-  AccountJNI.c
+  authenticator/MinecraftAccountJNI.m
 )
 target_link_libraries(CoralAccountJNI)
 
