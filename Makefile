@@ -320,8 +320,7 @@ payload: native java jre assets
 	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs_caciocavallo17)
 	cp -R $(SOURCEDIR)/Natives/resources/en.lproj/LaunchScreen.storyboardc $(WORKINGDIR)/Coral.app/Base.lproj/ || exit 1
 	cp -R $(SOURCEDIR)/Natives/Info.plist $(WORKINGDIR)/Coral.app/Info.plist || exit 1
-	cp -R $(SOURCEDIR)/Natives/en.lproj $(WORKINGDIR)/Coral.app/ || exit 1
-	cp -R $(SOURCEDIR)/Natives/Base.lproj $(WORKINGDIR)/Coral.app/ || exit 1
+	cp -R $(SOURCEDIR)/Natives/resources/en.lproj $(WORKINGDIR)/Coral.app/ || exit 1
 	cp -R $(SOURCEDIR)/Natives/resources $(WORKINGDIR)/Coral.app/ || exit 1
 	cp -R $(SOURCEDIR)/Natives/default_controls.json $(WORKINGDIR)/Coral.app/ || exit 1
 	cp -R $(SOURCEDIR)/libs/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
