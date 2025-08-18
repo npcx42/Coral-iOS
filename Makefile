@@ -319,15 +319,10 @@ payload: native java jre assets
 	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs_caciocavallo)
 	$(call METHOD_DIRCHECK,$(WORKINGDIR)/Coral.app/libs_caciocavallo17)
 	cp -R $(SOURCEDIR)/Natives/resources/en.lproj/LaunchScreen.storyboardc $(WORKINGDIR)/Coral.app/Base.lproj/ || exit 1
-	cp -R $(SOURCEDIR)/Natives/Info.plist $(WORKINGDIR)/Coral.app/Info.plist || exit 1
-	cp -R $(SOURCEDIR)/Natives/resources/en.lproj $(WORKINGDIR)/Coral.app/ || exit 1
-	cp -R $(SOURCEDIR)/Natives/resources $(WORKINGDIR)/Coral.app/ || exit 1
-	cp -R $(SOURCEDIR)/Natives/default_controls.json $(WORKINGDIR)/Coral.app/ || exit 1
-	cp -R $(SOURCEDIR)/libs/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
-	cp -R $(WORKINGDIR)/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
-	cp -R $(WORKINGDIR)/Coral $(WORKINGDIR)/Coral.app/Coral || exit 1
+	cp -R $(SOURCEDIR)/Natives/resources/* $(WORKINGDIR)/Coral.app/ || exit 1
+	cp $(WORKINGDIR)/*.dylib $(WORKINGDIR)/Coral.app/Frameworks/ || exit 1
 	cp -R $(SOURCEDIR)/JavaApp/libs/others/* $(WORKINGDIR)/Coral.app/libs/ || exit 1
-	cp -R $(SOURCEDIR)/JavaApp/build/libs/*.jar $(WORKINGDIR)/Coral.app/libs/ || exit 1
+	cp $(SOURCEDIR)/JavaApp/build/*.jar $(WORKINGDIR)/Coral.app/libs/ || exit 1
 	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo/* $(WORKINGDIR)/Coral.app/libs_caciocavallo || exit 1
 	cp -R $(SOURCEDIR)/JavaApp/libs/caciocavallo17/* $(WORKINGDIR)/Coral.app/libs_caciocavallo17 || exit 1
 	$(call METHOD_DIRCHECK,$(OUTPUTDIR)/Payload)
