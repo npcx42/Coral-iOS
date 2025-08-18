@@ -86,6 +86,13 @@
 "login.option.demo" = "Демонстрационный режим";
 "login.option.microsoft" = "Учётная запись Microsoft";
 "login.option.local" = "Локальная учётная запись";
+"login.option.elyby" = "Учётная запись Ely.by";
+
+// Двухфакторная аутентификация Ely.by
+"login.ely.2fa.title" = "Двухфакторная аутентификация";
+"login.ely.2fa.message" = "Введите код двухфакторной аутентификации";
+"login.ely.2fa.code" = "Код аутентификации";
+"login.ely.2fa.empty" = "Код аутентификации не может быть пустым";
 
 "login.warn.title.legacy_device" = "Следующая версия Amethyst не будет работать на вашем устройстве.";
 "login.warn.message.legacy_device" = "Для запуска следующего крупного обновления потребуется устройство под управлением iOS 14.";

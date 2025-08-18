@@ -99,6 +99,13 @@
 "login.option.demo" = "Demo account";
 "login.option.microsoft" = "Microsoft account";
 "login.option.local" = "Local account";
+"login.option.elyby" = "Ely.by account";
+
+// Ely.by Two-Factor Authentication
+"login.ely.2fa.title" = "Two-Factor Authentication";
+"login.ely.2fa.message" = "Please enter your two-factor authentication code";
+"login.ely.2fa.code" = "Authentication code";
+"login.ely.2fa.empty" = "Authentication code cannot be empty";
 
 "login.warn.title.legacy_device" = "The next release of Amethyst will not be compatible with this device.";
 "login.warn.message.legacy_device" = "To run the next major release, a device capable of running iOS 14 is required.";
