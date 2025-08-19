@@ -13,7 +13,7 @@ Important: Please support the developers of Minecraft by purchasing the game if 
 
 Looking for Android? There is no Android fork available yet, but it will be available soon.
 
-Also check out [Amethyst](https://github.com/AngelAuraMC/Amethyst-iOS) and [Amethyst-Android](https://github.com/AngelAuraMC/Amethyst-Android) for more stable and experience!
+Also check out [Amethyst](https://github.com/AngelAuraMC/Amethyst-iOS) and [Amethyst-Android](https://github.com/AngelAuraMC/Amethyst-Android) for more stable experience!
 
 ## Getting started with Coral
 Download Coral from releases and install it using any method of sideloading. 
