@@ -70,8 +70,14 @@
 "launcher.wait_jit.message" = "Amethyst полагается на работу JIT-компилятора Java для работы с максимальной производительностью.";
 
 "login.error.username.outOfRange" = "Имя пользователя не должно быть короче 3 и длиннее 16 символов";
+"login.error.fields.empty" = "Имя пользователя и пароль не могут быть пустыми";
+"login.error.invalid_credentials" = "Неверное имя пользователя или пароль";
+"login.error.invalid_response" = "Неверный ответ сервера";
+"login.error.token_missing" = "Отсутствует токен доступа или токен клиента";
+"login.error.token_expired" = "Токен аутентификации истёк, пожалуйста войдите снова";
 
 "login.alert.field.username" = "Имя пользователя";
+"login.alert.field.password" = "Пароль";
 
 "login.jit.checking" = "Проверка JIT...";
 "login.jit.enabled" = "JIT активирован";
@@ -88,7 +94,9 @@
 "login.option.local" = "Локальная учётная запись";
 "login.option.elyby" = "Учётная запись Ely.by";
 
-// Двухфакторная аутентификация Ely.by
+// Аутентификация Ely.by
+"login.ely.progress.auth" = "Аутентификация через Ely.by...";
+"login.ely.progress.refresh" = "Обновление токена аутентификации...";
 "login.ely.2fa.title" = "Двухфакторная аутентификация";
 "login.ely.2fa.message" = "Введите код двухфакторной аутентификации";
 "login.ely.2fa.code" = "Код аутентификации";

@@ -82,8 +82,14 @@
 "launcher.wait_jit_trollstore.message" = "If you still see this message, please enable URL Scheme in TrollStore.";
 
 "login.error.username.outOfRange" = "Username must be at least 3 characters and a maximum of 16 characters";
+"login.error.fields.empty" = "Username and password cannot be empty";
+"login.error.invalid_credentials" = "Invalid username or password";
+"login.error.invalid_response" = "Invalid server response";
+"login.error.token_missing" = "Access token or client token is missing";
+"login.error.token_expired" = "Authentication token has expired, please log in again";
 
 "login.alert.field.username" = "Username";
+"login.alert.field.password" = "Password";
 
 "login.jit.checking" = "Checking for JIT";
 "login.jit.enabled" = "JIT has been enabled";
@@ -101,7 +107,9 @@
 "login.option.local" = "Local account";
 "login.option.elyby" = "Ely.by account";
 
-// Ely.by Two-Factor Authentication
+// Ely.by Authentication
+"login.ely.progress.auth" = "Authenticating with Ely.by...";
+"login.ely.progress.refresh" = "Refreshing authentication token...";
 "login.ely.2fa.title" = "Two-Factor Authentication";
 "login.ely.2fa.message" = "Please enter your two-factor authentication code";
 "login.ely.2fa.code" = "Authentication code";
