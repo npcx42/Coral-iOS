@@ -36,6 +36,11 @@ jobs:
       - name: Checkout repository submodules
         run: git submodule update --init --recursive
 
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
       - name: Get gl4es latest commit hash
         id: gl4es-sha
         run: echo "::set-output name=sha::$(echo $(git ls-remote https://github.com/PojavLauncherTeam/gl4es-114-extra refs/heads/master | grep -io '^\S*'))"
